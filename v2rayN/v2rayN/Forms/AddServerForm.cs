@@ -5,10 +5,8 @@ using v2rayN.Mode;
 
 namespace v2rayN.Forms
 {
-    public partial class AddServerForm : BaseForm
-    {
-        public int EditIndex { get; set; }
-        VmessItem vmessItem = null;
+    public partial class AddServerForm : BaseServerForm
+    { 
 
         public AddServerForm()
         {
@@ -180,6 +178,18 @@ namespace v2rayN.Forms
             this.DialogResult = DialogResult.Cancel;
         }
 
+        private void cmbStreamSecurity_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string security = cmbStreamSecurity.Text;
+            if (Utils.IsNullOrEmpty(security))
+            {
+                panTlsMore.Hide();
+            }
+            else
+            {
+                panTlsMore.Show();
+            }
+        }
 
         #region 导入客户端/服务端配置
 
@@ -258,7 +268,7 @@ namespace v2rayN.Forms
         {
             ClearServer();
 
-            VmessItem vmessItem = V2rayConfigHandler.ImportFromClipboardConfig(Utils.GetClipboardData(), out string msg);
+            VmessItem vmessItem = ShareHandler.ImportFromClipboardConfig(Utils.GetClipboardData(), out string msg);
             if (vmessItem == null)
             {
                 UI.ShowWarning(msg);
@@ -278,17 +288,5 @@ namespace v2rayN.Forms
         }
         #endregion
 
-        private void cmbStreamSecurity_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string security = cmbStreamSecurity.Text;
-            if (Utils.IsNullOrEmpty(security))
-            {
-                panTlsMore.Hide();
-            }
-            else
-            {
-                panTlsMore.Show();
-            }
-        }
     }
 }

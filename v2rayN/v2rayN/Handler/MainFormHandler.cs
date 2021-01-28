@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using v2rayN.Base;
 using v2rayN.Mode;
 
 namespace v2rayN.Handler
@@ -32,7 +33,7 @@ namespace v2rayN.Handler
             try
             {
                 Color color = ColorTranslator.FromHtml("#3399CC");
-                int index = (int)config.listenerType;
+                int index = (int)config.sysProxyType;
                 if (index > 0)
                 {
                     color = (new Color[] { Color.Red, Color.Purple, Color.DarkGreen, Color.Orange, Color.DarkSlateBlue, Color.RoyalBlue })[index - 1];
@@ -72,7 +73,8 @@ namespace v2rayN.Handler
             {
                 return;
             }
-            if (config.vmess[index].configType != (int)EConfigType.Vmess)
+            if (config.vmess[index].configType != (int)EConfigType.Vmess
+                && config.vmess[index].configType != (int)EConfigType.VLESS)
             {
                 UI.Show(UIRes.I18N("NonVmessService"));
                 return;
@@ -112,7 +114,8 @@ namespace v2rayN.Handler
             {
                 return;
             }
-            if (config.vmess[index].configType != (int)EConfigType.Vmess)
+            if (config.vmess[index].configType != (int)EConfigType.Vmess
+                && config.vmess[index].configType != (int)EConfigType.VLESS)
             {
                 UI.Show(UIRes.I18N("NonVmessService"));
                 return;
@@ -145,6 +148,22 @@ namespace v2rayN.Handler
             }
         }
 
+        public int AddBatchServers(Config config, string clipboardData, string subid = "")
+        {
+            int counter;
+            int _Add()
+            {
+                return ConfigHandler.AddBatchServers(ref config, clipboardData, subid);
+            }
+            counter = _Add();
+            if (counter < 1)
+            {
+                clipboardData = Utils.Base64Decode(clipboardData);
+                counter = _Add();
+            }
 
+            return counter;
+        }
+        
     }
 }
